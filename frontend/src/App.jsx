@@ -12,6 +12,7 @@ import Popup from "./components/Popup";
 import { getUserAPI } from "./functions/auth";
 import { recordVisit } from "./functions/traffic";
 import { setUser } from "./store/authSlice";
+import { Analytics } from "@vercel/analytics/react";
 
 
 
@@ -180,6 +181,7 @@ const App = () => {
       <Suspense fallback={null}>
         <Footer />
       </Suspense>
+      <Analytics />
     </>
   );
 };
