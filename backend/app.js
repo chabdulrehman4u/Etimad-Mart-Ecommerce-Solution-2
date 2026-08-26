@@ -69,19 +69,16 @@ app.use(
         connectSrc: [
           "'self'",
           "https://res.cloudinary.com",
-          "https://etimadmart.up.railway.app",
-          "https://etimadmart.netlify.app",
+          "https://etimad-mart-api.onrender.com",
+          "https://*.onrender.com",
+          "https://*.vercel.app",
           "https://etimadmart.com",
-          "https://etimadmart.com/api/v1",
+          "https://*.etimadmart.com",
+          "https://etimadmart.netlify.app",
+          "https://dev--etimadmart.netlify.app",
           "https://www.google-analytics.com",
           "https://www.facebook.com",
           "https://analytics.tiktok.com",
-          "https://*.us-central1.run.app",
-          "https://mpc-prod-1-1053047382554.us-central1.run.app",
-          "https://mpc-prod-2-1053047382554.us-central1.run.app",
-          "https://*.run.app",
-          "wss://*.us-central1.run.app",
-          "wss://*.run.app",
           "ws://localhost:*",
           "http://localhost:*",
           "https://localhost:*"
@@ -161,10 +158,10 @@ const corsOptions = {
       return callback(e);
     }
 
-    return callback(new Error("Not allowed by CORS"));
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: [
     "Content-Type",
     "Authorization",
