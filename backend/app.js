@@ -150,7 +150,11 @@ const corsOptions = {
     try {
       const { hostname } = new URL(origin);
       const isNetlifyPreview = hostname.endsWith(".netlify.app");
-      if (allowedOrigins.has(origin) || isNetlifyPreview) {
+      const isVercelPreview = hostname.endsWith(".vercel.app");
+      const isCustomDomain = hostname === "etimadmart.com" || hostname.endsWith(".etimadmart.com");
+      const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+
+      if (allowedOrigins.has(origin) || isNetlifyPreview || isVercelPreview || isCustomDomain || isLocalhost) {
         return callback(null, true);
       }
     } catch (e) {
