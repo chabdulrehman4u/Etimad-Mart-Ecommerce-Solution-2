@@ -1,0 +1,73 @@
+const mongoose = require('mongoose');
+
+const orderSchema = new mongoose.Schema({
+    orderedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    guestId: { type: String, required: false },
+    shippingAddress: {
+        fullName: { type: String, required: true },
+        streetAddress: { type: String, required: true },
+        city: { type: String, required: true },
+        mobile: {
+            type: String,
+            required: true,
+            validate: {
+                validator: function (v) {
+                    if (!v) return false;
+                    const clean = String(v).trim().replace(/[\s\-\(\)]/g, '');
+                    return /^(\+92|92|0)?3\d{9}$/.test(clean);
+                },
+                message: (props) => `${props.value} is not a valid Pakistani mobile number!`,
+            },
+        },
+        additionalInstructions: { type: String },
+    },
+    cartSummary: [
+        {
+            product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+            title: { type: String },
+            image: { type: String },
+            count: { type: Number, required: true },
+            price: { type: Number, required: true },
+            selectedVariants: [{ type: mongoose.Schema.Types.Mixed }]
+        },
+    ],
+    deliveryCharges: { type: Number, default: 0 },
+    freeShipping: { type: Boolean, default: false },
+    totalPrice: { type: Number, required: true },
+    // Coupon/discount (optional)
+    couponCode: { type: String },
+    couponType: { type: String, enum: ['percent', 'fixed'], required: false },
+    discountAmount: { type: Number, default: 0 },
+    status: {
+        type: String,
+        enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled'],
+        default: 'Pending',
+    },
+    // Order source: which client placed it
+    source: {
+        type: String,
+        enum: ['web', 'mobile', 'unknown' , 'manual'],
+        default: 'unknown',
+        index: true,
+    },
+    orderedAt: { type: Date, default: Date.now },
+    // Human-friendly incremental order number for external systems (e.g., courier portals)
+    orderShortId: { type: Number, index: true },
+    // Courier provider metadata (e.g., Leopard Courier Service, PostEx)
+    shippingProvider: {
+        provider: { type: String, enum: ['lcs', 'postex'], required: false },
+        pushed: { type: Boolean, default: false },
+        trackingNumber: { type: String },
+        consignmentNo: { type: String },
+        labelUrl: { type: String },
+        extra: { type: mongoose.Schema.Types.Mixed },
+        pushedAt: { type: Date },
+        // PostEx specific fields
+        orderRefNumber: { type: String }, // PostEx order reference
+        postexOrderId: { type: String }, // PostEx internal order ID
+        status: { type: String }, // PostEx order status
+        lastStatusUpdate: { type: Date },
+    },
+});
+
+module.exports = mongoose.model('Order', orderSchema);

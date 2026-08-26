@@ -1,0 +1,34 @@
+{
+  "page": "collection",
+  "sections": [
+    {
+      "id": "hero-collection",
+      "type": "hero",
+      "settings": {
+        "title": "Shop the Collection",
+        "subtitle": "Curated items from this category",
+        "image": "/banner.jpg",
+        "ctaText": "View All",
+        "ctaLink": "/shop",
+        "align": "center"
+      }
+    },
+    {
+      "id": "grid-all",
+      "type": "product-grid",
+      "settings": {
+        "title": "All Products",
+        "source": "all",
+        "limit": 12,
+        "page": 1
+      }
+    },
+    {
+      "id": "rich-collection-note",
+      "type": "rich-text",
+      "settings": {
+        "html": "<p class=\"text-center\">Use filters above to narrow down your search</p>"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+# Apply to all user-agents (web crawlers)
+User-agent: *
+
+# Allow all content by default
+Allow: /
+
+# Disallow specific paths that are not meant for public indexing
+Disallow: /login
+Disallow: /signup
+Disallow: /cart/checkout
+Disallow: /order-history
+Disallow: /admin-dashboard
+Disallow: /add-product
+Disallow: /edit-product/
+
+# Specify the location of your sitemap
+# Remember to update http://localhost:3000 to your actual domain in production!
+Sitemap: https://etimadmart.com/sitemap.xml 

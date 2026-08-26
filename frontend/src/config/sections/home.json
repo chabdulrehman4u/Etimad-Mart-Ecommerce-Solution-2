@@ -1,0 +1,34 @@
+{
+  "page": "home",
+  "sections": [
+    {
+      "id": "hero-1",
+      "type": "hero",
+      "settings": {
+        "title": "Welcome to Etimad Mart",
+        "subtitle": "Top quality products. Great prices.",
+        "image": "/banner.jpg",
+        "ctaText": "Shop Now",
+        "ctaLink": "/shop",
+        "align": "center"
+      }
+    },
+    {
+      "id": "rich-1",
+      "type": "rich-text",
+      "settings": {
+        "html": "<p class=\"text-center\"><strong>Free Shipping</strong> on orders over Rs. 2000</p>"
+      }
+    },
+    {
+      "id": "grid-1",
+      "type": "product-grid",
+      "settings": {
+        "title": "Featured Products",
+        "source": "featured",
+        "limit": 8,
+        "page": 1
+      }
+    }
+  ]
+}

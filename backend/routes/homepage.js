@@ -1,0 +1,348 @@
+const express = require('express');
+const router = express.Router();
+const Product = require('../models/product');
+const Category = require('../models/category');
+const Brand = require('../models/brand');
+const Banner = require('../models/banner');
+const Topbar = require('../models/topbar');
+const Tag = require('../models/tag');
+const { isAuthorized, isAdmin } = require('../middlewares/auth');
+
+// Multi-key in-memory cache for homepage data
+const homepageCache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const MAX_CACHE_ENTRIES = 50;
+
+const getCachedData = (key) => {
+  const entry = homepageCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > CACHE_DURATION) {
+    homepageCache.delete(key);
+    return null;
+  }
+  return entry.data;
+};
+
+const setCachedData = (key, data) => {
+  if (homepageCache.size >= MAX_CACHE_ENTRIES) {
+    const firstKey = homepageCache.keys().next().value;
+    if (firstKey) homepageCache.delete(firstKey);
+  }
+  homepageCache.set(key, { data, timestamp: Date.now() });
+};
+
+// Combined homepage data endpoint - Single API call for all homepage content
+router.get('/homepage-data', async (req, res) => {
+  try {
+    // Set HTTP cache headers for better client/proxy caching
+    res.setHeader('Cache-Control', `public, max-age=${CACHE_DURATION / 1000}, s-maxage=${CACHE_DURATION / 1000}, stale-while-revalidate=${CACHE_DURATION / 1000}, stale-if-error=86400`);
+    // Parse pagination parameters from query
+    const featuredPage = parseInt(req.query.featuredPage, 10) || 1;
+    const featuredLimit = parseInt(req.query.featuredLimit, 10) || 8;
+    const newPage = parseInt(req.query.newPage, 10) || 1;
+    const newLimit = parseInt(req.query.newLimit, 10) || 8;
+    const bestPage = parseInt(req.query.bestPage, 10) || 1;
+    const bestLimit = parseInt(req.query.bestLimit, 10) || 5;
+
+    // Create cache key based on pagination params
+    const cacheKey = `${featuredPage}-${featuredLimit}-${newPage}-${newLimit}-${bestPage}-${bestLimit}`;
+
+    // Check cache first (with pagination-specific cache)
+    const cachedData = getCachedData(cacheKey);
+    if (cachedData) {
+      // Strong client/proxy caching for cached response
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600, stale-if-error=86400');
+      return res.json({
+        success: true,
+        cached: true,
+        data: cachedData
+      });
+    }
+
+    console.log(`Fetching fresh homepage data with pagination: Featured(${featuredPage}/${featuredLimit}), New(${newPage}/${newLimit}), Best(${bestPage}/${bestLimit})`);
+    const startTime = Date.now();
+
+    // Use Promise.all for parallel execution - much faster than sequential
+    const [
+      banners,
+      categories,
+      brands,
+      featuredProducts,
+      newProducts,
+      bestSellers,
+      activeTopbar,
+      menuCats
+    ] = await Promise.all([
+      // Banners - schema uses isActive
+      Banner.find({ isActive: true })
+        .select('image link isActive alt')
+        .limit(5)
+        .lean(), // Use lean() for better performance
+
+      // Categories - schema doesn't have 'active'; select correct image field 'Image'
+      Category.find({})
+        .select('name slug Image menu alt metaDescription')
+        .limit(14)
+        .lean(),
+
+      // Brands - schema doesn't have 'active'; select correct logo field
+      Brand.find({})
+        .select('name slug logo alt metaDescription')
+        .limit(10)
+        .lean(),
+
+      // Featured Products - with pagination
+      getProductsByTag('featured', featuredLimit, { createdAt: -1 }, featuredPage),
+
+      // New Products - recent products with pagination
+      getProductsByTag('new', newLimit, { createdAt: -1 }, newPage),
+
+      // Best Sellers - with pagination
+      getProductsByTag('best seller', bestLimit, {}, bestPage),
+
+      // Topbar active text(s)
+      Topbar.findOne({ isEnable: true }).select('text isEnable').lean(),
+
+      // Menu categories for navbar/menu (with subcategories and fallback)
+      (async () => {
+        try {
+          let cats = await Category.aggregate([
+            { $match: { menu: true } },
+            { $sort: { name: 1 } },
+            { $limit: 30 },
+            {
+              $lookup: {
+                from: 'subcategories',
+                localField: '_id',
+                foreignField: 'category',
+                pipeline: [
+                  { $project: { _id: 1, name: 1, slug: 1 } },
+                  { $sort: { name: 1 } }
+                ],
+                as: 'subcategories'
+              }
+            },
+            { $project: { name: 1, slug: 1, Image: 1, image: '$Image', menu: 1, subcategories: 1 } }
+          ]);
+
+          if (!cats || cats.length === 0) {
+            cats = await Category.aggregate([
+              { $sort: { name: 1 } },
+              { $limit: 30 },
+              {
+                $lookup: {
+                  from: 'subcategories',
+                  localField: '_id',
+                  foreignField: 'category',
+                  pipeline: [
+                    { $project: { _id: 1, name: 1, slug: 1 } },
+                    { $sort: { name: 1 } }
+                  ],
+                  as: 'subcategories'
+                }
+              },
+              { $project: { name: 1, slug: 1, Image: 1, image: '$Image', menu: 1, subcategories: 1 } }
+            ]);
+          }
+          return cats || [];
+        } catch (err) {
+          console.error('Error fetching menu categories:', err);
+          return [];
+        }
+      })()
+    ]);
+
+    // Get showcase category products in parallel
+    const showcaseCategories = await Promise.all([
+      getProductsByCategory('trimmers-and-shavers', 4),
+      getProductsByCategory('mehndi-stickers', 4),
+      getProductsByCategory('beauty-and-personal-care', 4)
+    ]);
+
+    const responseData = {
+      banners: banners || [],
+      categories: categories || [],
+      brands: brands || [],
+      topbar: activeTopbar || null,
+      menuCategories: menuCats || [],
+      featuredProducts: featuredProducts?.products || featuredProducts || [],
+      newProducts: newProducts?.products || newProducts || [],
+      bestSellers: bestSellers?.products || bestSellers || [],
+      showcaseCategories: {
+        'trimmers-and-shavers': showcaseCategories[0] || [],
+        'mehndi-stickers': showcaseCategories[1] || [],
+        'beauty-and-personal-care': showcaseCategories[2] || []
+      },
+      // Include pagination metadata from the helper functions
+      metadata: {
+        featuredProducts: {
+          currentPage: featuredProducts?.currentPage || 1,
+          totalPages: featuredProducts?.totalPages || 1,
+          totalProducts: featuredProducts?.totalProducts || (featuredProducts?.products?.length || 0),
+          limit: featuredProducts?.limit || 8
+        },
+        newProducts: {
+          currentPage: newProducts?.currentPage || 1,
+          totalPages: newProducts?.totalPages || 1,
+          totalProducts: newProducts?.totalProducts || (newProducts?.products?.length || 0),
+          limit: newProducts?.limit || 8
+        },
+        bestSellers: {
+          currentPage: bestSellers?.currentPage || 1,
+          totalPages: bestSellers?.totalPages || 1,
+          totalProducts: bestSellers?.totalProducts || (bestSellers?.products?.length || 0),
+          limit: bestSellers?.limit || 5
+        }
+      }
+    };
+
+    // Cache the response with cache key
+    setCachedData(cacheKey, responseData);
+
+    const endTime = Date.now();
+    console.log(`Homepage data fetched in ${endTime - startTime}ms`);
+
+    // Fresh response: still allow short caching with SWR
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600, stale-if-error=86400');
+    res.json({
+      success: true,
+      cached: false,
+      fetchTime: endTime - startTime,
+      data: responseData
+    });
+
+  } catch (error) {
+    console.error('Homepage data error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to load homepage data',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+// Helper function to get products by tag name with pagination info and fallback
+async function getProductsByTag(tagName, limit = 8, sort = {}, page = 1) {
+  try {
+    let tag = null;
+    try {
+      tag = await Tag.findOne({ name: new RegExp(tagName, 'i') }).lean();
+    } catch {}
+
+    const filter = tag ? { tags: { $in: [tag._id] } } : {};
+    let totalProducts = await Product.countDocuments(filter);
+    let queryFilter = filter;
+
+    // Fallback: If tag doesn't exist or has 0 products, fetch general products
+    if (totalProducts === 0) {
+      totalProducts = await Product.countDocuments({});
+      queryFilter = {};
+    }
+
+    const totalPages = Math.ceil(totalProducts / limit) || 1;
+    const skip = (page - 1) * limit;
+
+    const query = Product.find(queryFilter)
+      .populate('categories', 'name slug')
+      .populate('brand', 'name slug')
+      .select('title price salePrice images slug stock averageRating freeShipping isDod dodPrice dodStart dodEnd')
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    if (Object.keys(sort).length > 0) {
+      query.sort(sort);
+    } else {
+      query.sort({ createdAt: -1 });
+    }
+
+    const products = await query;
+
+    return {
+      products: products || [],
+      totalProducts: totalProducts || 0,
+      totalPages: totalPages || 1,
+      currentPage: page,
+      limit
+    };
+  } catch (error) {
+    console.error('Error fetching products by tag:', tagName, error);
+    try {
+      const fallback = await Product.find({})
+        .populate('categories', 'name slug')
+        .populate('brand', 'name slug')
+        .select('title price salePrice images slug stock averageRating freeShipping isDod dodPrice dodStart dodEnd')
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean();
+      return {
+        products: fallback || [],
+        totalProducts: fallback.length,
+        totalPages: 1,
+        currentPage: 1,
+        limit
+      };
+    } catch {
+      return {
+        products: [],
+        totalProducts: 0,
+        totalPages: 0,
+        currentPage: 1,
+        limit
+      };
+    }
+  }
+}
+
+// Helper function to get products by category slug with fallback
+async function getProductsByCategory(categorySlug, limit = 4) {
+  try {
+    let category = null;
+    try {
+      category = await Category.findOne({ slug: categorySlug }).lean();
+    } catch {}
+
+    const filter = category ? { categories: category._id } : {};
+    let products = await Product.find(filter)
+      .populate('categories', 'name slug')
+      .populate('brand', 'name slug')
+      .select('title price salePrice images slug stock averageRating freeShipping isDod dodPrice dodStart dodEnd')
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Fallback: If no products found for this specific category, fetch general latest products
+    if (!products || products.length === 0) {
+      products = await Product.find({})
+        .populate('categories', 'name slug')
+        .populate('brand', 'name slug')
+        .select('title price salePrice images slug stock averageRating freeShipping isDod dodPrice dodStart dodEnd')
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean();
+    }
+
+    return products || [];
+  } catch (error) {
+    console.error('Error fetching category products:', categorySlug, error);
+    return [];
+  }
+}
+
+// Clear cache endpoint (for admin use)
+router.post('/clear-cache', isAuthorized, isAdmin, (req, res) => {
+  homepageCache.clear();
+  console.log('Homepage cache cleared manually by admin');
+  res.json({ success: true, message: 'Homepage cache cleared successfully' });
+});
+
+// Health check endpoint
+router.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: Date.now(),
+    cachedEntries: homepageCache.size
+  });
+});
+
+module.exports = router;
