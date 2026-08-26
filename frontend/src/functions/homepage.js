@@ -20,8 +20,8 @@ export const getHomepageData = async (params = {}) => {
         bestLimit: params.bestLimit || undefined,
       },
       headers: { 'Content-Type': 'application/json' },
-      // optional timeout to avoid hanging requests
-      timeout: 15000,
+      // Allow enough time for backend cold starts
+      timeout: 45000,
       // no credentials needed; public endpoint
       withCredentials: false,
     });

@@ -38,7 +38,7 @@ export const filterByCategory = async ({ categories, subcategory, page = 1, limi
         const response = await axios.get(`${BASE_URL}/search/filter/category?page=${page}&limit=${limit}`, {
             params: { categoryName: categories, subcategory },
             withCredentials: true,
-            timeout: 10000, // 10 second timeout
+            timeout: 45000, // 45 second timeout for cold starts
             paramsSerializer: (params) => new URLSearchParams(params).toString(),
         });
         return response?.data;

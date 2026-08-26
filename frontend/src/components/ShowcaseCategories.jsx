@@ -57,10 +57,12 @@ const ShowcaseCategories = ({
       limit,
     }).then(res => {
       const products = res?.products || [];
-      // Cache the result - longer cache for priority categories
-      const cacheTime = priority ? 10 * 60 * 1000 : 5 * 60 * 1000; // 10min vs 5min
-      categoryCache.set(cacheKey, products);
-      setTimeout(() => categoryCache.delete(cacheKey), cacheTime);
+      if (products.length > 0) {
+        // Cache the result - longer cache for priority categories
+        const cacheTime = priority ? 10 * 60 * 1000 : 5 * 60 * 1000; // 10min vs 5min
+        categoryCache.set(cacheKey, products);
+        setTimeout(() => categoryCache.delete(cacheKey), cacheTime);
+      }
       return products;
     }).finally(() => {
       pendingRequests.delete(cacheKey);
