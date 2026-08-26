@@ -81,12 +81,12 @@ const CategoryBarSection = React.memo(() => {
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
-    const CACHE_KEY = "menu_categories_cache_v1";
+    const CACHE_KEY = "menu_categories_cache_v2";
     const CACHE_MS = 30 * 60 * 1000;
 
     try {
       const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || "null");
-      if (cached && Array.isArray(cached.items) && Date.now() - cached.ts < CACHE_MS) {
+      if (cached && Array.isArray(cached.items) && cached.items.length > 0 && Date.now() - cached.ts < CACHE_MS) {
         setCategories(cached.items);
       }
     } catch {}
@@ -96,9 +96,11 @@ const CategoryBarSection = React.memo(() => {
       try {
         const cats = await getHomepageMenuCategories();
         setCategories(cats || []);
-        try {
-          sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), items: cats || [] }));
-        } catch {}
+        if (Array.isArray(cats) && cats.length > 0) {
+          try {
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), items: cats }));
+          } catch {}
+        }
       } catch (e) {
         if (e?.name !== "AbortError" && e?.name !== "CanceledError") {
           console.error("Error fetching menu categories:", e);

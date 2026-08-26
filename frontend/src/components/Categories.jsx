@@ -8,7 +8,7 @@ const Categories = React.memo(() => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     // Simple cache to speed up subsequent visits
-    const CACHE_KEY = 'categories_cache_v1';
+    const CACHE_KEY = 'categories_cache_v2';
     const CACHE_MS = 30 * 60 * 1000; // 30 minutes
     // Mobile detection and staged rendering for faster first paint
     const [isMobile, setIsMobile] = useState(false);
@@ -19,11 +19,13 @@ const Categories = React.memo(() => {
             setLoading(true);
             setError(null);
             const list = await getHomepageCategories();
-            setCategories(list);
-            // Warm cache
-            try {
-                sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), items: list }));
-            } catch {}
+            setCategories(list || []);
+            // Warm cache only if valid non-empty list
+            if (Array.isArray(list) && list.length > 0) {
+                try {
+                    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), items: list }));
+                } catch {}
+            }
         } catch (error) {
             console.error("Error in fetching all categories", error);
             setError("Failed to load categories. Please try again later.");
@@ -36,7 +38,7 @@ const Categories = React.memo(() => {
         // Read from cache first for instant paint
         try {
             const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
-            if (cached && Array.isArray(cached.items) && Date.now() - cached.ts < CACHE_MS) {
+            if (cached && Array.isArray(cached.items) && cached.items.length > 0 && Date.now() - cached.ts < CACHE_MS) {
                 setCategories(cached.items);
             }
         } catch {}

@@ -49,36 +49,36 @@ const ShowcaseCategories = ({
     }
 
     setLoadingProducts(true);
-    
-    // Create and store the pending request
+
     const requestPromise = filterByCategory({
       categories: categorySlug,
       page: 1,
       limit,
-    }).then(res => {
-      const products = res?.products || [];
-      if (products.length > 0) {
-        // Cache the result - longer cache for priority categories
-        const cacheTime = priority ? 10 * 60 * 1000 : 5 * 60 * 1000; // 10min vs 5min
-        categoryCache.set(cacheKey, products);
-        setTimeout(() => categoryCache.delete(cacheKey), cacheTime);
-      }
-      return products;
-    }).finally(() => {
-      pendingRequests.delete(cacheKey);
-      setLoadingProducts(false);
-    });
+    })
+      .then((res) => {
+        const products = res?.products || [];
+        if (products.length > 0) {
+          const cacheTime = priority ? 10 * 60 * 1000 : 5 * 60 * 1000;
+          categoryCache.set(cacheKey, products);
+          setTimeout(() => categoryCache.delete(cacheKey), cacheTime);
+        }
+        return products;
+      })
+      .finally(() => {
+        pendingRequests.delete(cacheKey);
+        setLoadingProducts(false);
+      });
 
     pendingRequests.set(cacheKey, requestPromise);
 
     try {
       const result = await requestPromise;
-      setProducts(result);
+      setProducts(result || []);
     } catch (err) {
       console.error(`Error fetching products for ${categorySlug}:`, err);
       setProducts([]);
     }
-  }, [categorySlug, limit, cacheKey]);
+  }, [categorySlug, limit, cacheKey, priority]);
 
   // Intersection Observer for lazy loading (skip if priority)
   useEffect(() => {
