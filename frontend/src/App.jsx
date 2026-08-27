@@ -58,16 +58,13 @@ const App = () => {
         const response = await getUserAPI();
         dispatch(setUser(response?.user));
       } catch (error) {
-        // console.log("Error fetching user", error);
-        if (window.location.pathname !== "/signup") {
-          navigateTo("/login");
-        }
+        dispatch(setUser(null));
       } finally {
         setLoading(false);
       }
     };
     fetchUser();
-  }, [dispatch, navigateTo]);
+  }, [dispatch]);
 
   // Notify index.html splash to hide when app is ready
   useEffect(() => {
