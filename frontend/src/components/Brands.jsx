@@ -48,9 +48,8 @@ const Brands = React.memo(() => {
 
   const containerClasses = useMemo(
     () =>
-      `px-0 md:px-6 lg:px-16 py-2 transition-all duration-500 ease-out ` +
-      (inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"),
-    [inView]
+      `px-0 md:px-6 lg:px-16 py-2 transition-all duration-500 ease-out opacity-100 translate-y-0`,
+    []
   );
 
   const renderBrandContent = useCallback(

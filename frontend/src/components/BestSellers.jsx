@@ -156,11 +156,7 @@ const BestSellers = React.memo(() => {
                 <div className="flex-grow h-[0.5px] ml-4 bg-primary"></div>
             </motion.div>
 
-            {!inView ? (
-                <div className="h-64 bg-gray-50 animate-pulse rounded-lg flex items-center justify-center">
-                    <span className="text-gray-400">Loading Best Sellers...</span>
-                </div>
-            ) : loading && currentPage === 1 ? renderSkeletons : renderProducts}
+            {loading && bestSellers.length === 0 ? renderSkeletons : renderProducts}
             {renderLoadMoreButton}
         </div>
     );

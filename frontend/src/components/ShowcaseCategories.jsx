@@ -14,12 +14,12 @@ const ShowcaseCategories = ({
   categoryName,
   categoryImage ,
   limit = 6,
-  lazy = true, // Enable lazy loading by default
+  lazy = false, // Load immediately by default
   priority = false, // Set to true for first/critical categories
 }) => {
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
-  const [isVisible, setIsVisible] = useState(!lazy || priority); // Load immediately if priority or not lazy
+  const [isVisible, setIsVisible] = useState(true);
 
   const scrollRef = useRef();
   const containerRef = useRef();

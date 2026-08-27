@@ -6,36 +6,39 @@ import { BASE_URL } from '../config/baseURL';
 // Single function to get all homepage data
 // Accept optional pagination params for featured/new/best sections
 // params: { featuredPage, featuredLimit, newPage, newLimit, bestPage, bestLimit }
-export const getHomepageData = async (params = {}) => {
-  try {
-    const url = `${BASE_URL}/homepage-data`;
-    const response = await axios.get(url, {
-      // mirror previous query building via axios params
-      params: {
-        featuredPage: params.featuredPage || undefined,
-        featuredLimit: params.featuredLimit || undefined,
-        newPage: params.newPage || undefined,
-        newLimit: params.newLimit || undefined,
-        bestPage: params.bestPage || undefined,
-        bestLimit: params.bestLimit || undefined,
-      },
-      headers: { 'Content-Type': 'application/json' },
-      // Allow enough time for backend cold starts
-      timeout: 45000,
-      // no credentials needed; public endpoint
-      withCredentials: false,
-    });
+export const getHomepageData = async (params = {}, retries = 2) => {
+  let attempt = 0;
+  while (attempt <= retries) {
+    try {
+      const url = `${BASE_URL}/homepage-data`;
+      const response = await axios.get(url, {
+        params: {
+          featuredPage: params.featuredPage || undefined,
+          featuredLimit: params.featuredLimit || undefined,
+          newPage: params.newPage || undefined,
+          newLimit: params.newLimit || undefined,
+          bestPage: params.bestPage || undefined,
+          bestLimit: params.bestLimit || undefined,
+        },
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 45000,
+        withCredentials: false,
+      });
 
-    const data = response.data;
-    
-    if (!data.success) {
-      throw new Error(data.message || 'Failed to fetch homepage data');
+      const data = response.data;
+      if (data && data.success) {
+        return data;
+      }
+      throw new Error(data?.message || 'Failed to fetch homepage data');
+    } catch (error) {
+      attempt++;
+      if (attempt > retries) {
+        console.error('Homepage data fetch failed after retries:', error);
+        throw error;
+      }
+      console.warn(`Homepage data fetch failed (attempt ${attempt}/${retries + 1}), retrying in 1.5s...`, error?.message);
+      await new Promise((r) => setTimeout(r, 1500));
     }
-
-    return data;
-  } catch (error) {
-    console.error('Homepage data fetch failed:', error);
-    throw error;
   }
 };
 

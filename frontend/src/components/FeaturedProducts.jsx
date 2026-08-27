@@ -265,7 +265,7 @@ const FeaturedProducts = React.memo(() => {
         <div className="flex-grow h-[0.5px] ml-4 bg-primary"></div>
       </motion.div>
 
-      {loading ? (
+      {loading && products.length === 0 ? (
         renderSkeletons
       ) : (
         <div className="relative">

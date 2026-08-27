@@ -83,9 +83,8 @@ const Categories = React.memo(() => {
         return `${imageUrl}${sep}f_auto&q_auto:eco&dpr=auto&w=${width}&h=${height}&c=fill`;
     }, []);
 
-    // Memoize the category list rendering
     const renderCategories = useMemo(() => {
-        if (loading) {
+        if (loading && (!categories || categories.length === 0)) {
             // Return tiles directly so they use the same outer grid container
             const skeletonCount = isMobile ? 8 : 14;
             return Array.from({ length: skeletonCount }).map((_, idx) => (

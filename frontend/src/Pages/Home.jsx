@@ -8,15 +8,15 @@ import useFacebookPixel from '../hooks/useFacebookPixel';
 import useTikTokPixel from '../hooks/useTikTokPixel';
 import { getCachedHomepageData } from '../functions/homepage';
 
-// Lazy-load components with intersection observer for better performance
-const Categories = lazy(() => import('../components/Categories'));
-const Brands = lazy(() => import('../components/Brands'));
-const FeaturedProducts = lazy(() => import('../components/FeaturedProducts'));
-const NewArrivals = lazy(() => import('../components/NewArrivals'));
-const BestSellers = lazy(() => import('../components/BestSellers'));
-const ShowcaseCategories = lazy(() => import('../components/ShowcaseCategories'));
-const Marquee = lazy(() => import('react-fast-marquee'));
-const ProductCardSkeleton = lazy(() => import('../components/skeletons/ProductCardSkeleton'));
+// Direct core homepage components for instant rendering without chunk lag
+import Categories from '../components/Categories';
+import Brands from '../components/Brands';
+import FeaturedProducts from '../components/FeaturedProducts';
+import NewArrivals from '../components/NewArrivals';
+import BestSellers from '../components/BestSellers';
+import ShowcaseCategories from '../components/ShowcaseCategories';
+import Marquee from 'react-fast-marquee';
+import ProductCardSkeleton from '../components/skeletons/ProductCardSkeleton';
 
 // Optimized skeleton with better visual hierarchy
 const SectionSkeleton = ({ className = '', height = 'h-40 md:h-60' }) => (
