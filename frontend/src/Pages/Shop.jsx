@@ -21,8 +21,9 @@ import getShopSchema from '../helpers/getShopSchema';
 const Shop = () => {
     const [priceFilter, setPriceFilter] = useState("");
     const [categoryFilter, setCategoryFilter] = useState([]);
-    const [minPrice, setMinPrice] = useState(100);
-    const [maxPrice, setMaxPrice] = useState(10000);
+    const [minPrice, setMinPrice] = useState(null);
+    const [maxPrice, setMaxPrice] = useState(null);
+    const [priceBounds, setPriceBounds] = useState({ min: 0, max: 10000 });
     const [ratingFilter, setRatingFilter] = useState(null);
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
@@ -41,7 +42,6 @@ const Shop = () => {
     const toggleSortDropdown = () => {
         setIsSortOpen(!isSortOpen);
     };
-
 
     const fetchAllCategories = async () => {
         try {
@@ -65,9 +65,10 @@ const Shop = () => {
         const fetchMinMaxPrice = async () => {
             try {
                 const response = await getMinMaxPrice();
-                setMinPrice(response.minPrice);
-                setMaxPrice(response.maxPrice);
-                setPriceRange([response.minPrice, response.maxPrice]);
+                if (response?.success) {
+                    setPriceBounds({ min: response.minPrice, max: response.maxPrice });
+                    setPriceRange([response.minPrice, response.maxPrice]);
+                }
             } catch (error) {
                 console.log("Error in fetching min and max price", error);
             }
@@ -84,16 +85,14 @@ const Shop = () => {
     const fetchFilteredProducts = async (page = 1) => {
         setLoading(true);
         try {
-            const defaultMin = 100;
-            const defaultMax = 10000;
-            const isDefaultPriceRange = minPrice === defaultMin && maxPrice === defaultMax;
+            const isPriceChanged = minPrice != null || maxPrice != null;
 
             const isAnyFilterActive =
                 (categoryFilter && categoryFilter.length > 0) ||
                 !!brandFilter ||
                 !!ratingFilter ||
                 !!priceFilter ||
-                !isDefaultPriceRange;
+                isPriceChanged;
 
             let response;
 
@@ -102,10 +101,8 @@ const Shop = () => {
                 if (categoryFilter.length > 0) params.categories = categoryFilter;
                 if (brandFilter) params.brand = brandFilter;
                 if (ratingFilter) params.rating = ratingFilter;
-                if (!isDefaultPriceRange) {
-                    params.minPrice = minPrice;
-                    params.maxPrice = maxPrice;
-                }
+                if (minPrice != null) params.minPrice = minPrice;
+                if (maxPrice != null) params.maxPrice = maxPrice;
                 if (priceFilter === "low") params.sort = "price_asc";
                 if (priceFilter === "high") params.sort = "price_desc";
 
@@ -119,6 +116,14 @@ const Shop = () => {
             setCurrentPage(response?.currentPage || 1);
         } catch (error) {
             console.error("Error fetching products:", error);
+            // Fallback to getAllProducts on error
+            try {
+                const fallback = await getAllProducts(page, 16);
+                setProducts(fallback?.products || []);
+                setTotalPages(fallback?.totalPages || 0);
+            } catch (fbErr) {
+                setProducts([]);
+            }
         } finally {
             setLoading(false);
         }

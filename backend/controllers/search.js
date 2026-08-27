@@ -621,12 +621,12 @@ const combinedFilter = async (req, res) => {
         }
 
         // Price range filter
-        const pMin = minPrice != null ? parseFloat(minPrice) : null;
-        const pMax = maxPrice != null ? parseFloat(maxPrice) : null;
-        if (!isNaN(pMin) || !isNaN(pMax)) {
+        const pMin = (minPrice !== undefined && minPrice !== null && minPrice !== '') ? parseFloat(minPrice) : null;
+        const pMax = (maxPrice !== undefined && maxPrice !== null && maxPrice !== '') ? parseFloat(maxPrice) : null;
+        if ((pMin !== null && !isNaN(pMin)) || (pMax !== null && !isNaN(pMax))) {
             query.price = {};
-            if (!isNaN(pMin)) query.price.$gte = pMin;
-            if (!isNaN(pMax)) query.price.$lte = pMax;
+            if (pMin !== null && !isNaN(pMin)) query.price.$gte = pMin;
+            if (pMax !== null && !isNaN(pMax)) query.price.$lte = pMax;
         }
 
         // Sorting
