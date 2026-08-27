@@ -17,6 +17,13 @@ import BestSellers from '../components/BestSellers';
 import ShowcaseCategories from '../components/ShowcaseCategories';
 import Marquee from 'react-fast-marquee';
 const SectionSkeleton = ({ className = '', height = 'h-40 md:h-60' }) => (
+  <div className={`w-full ${height} bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-pulse rounded-lg ${className}`}>
+    <div className="p-4 space-y-3">
+      <div className="h-6 bg-gray-300 rounded w-1/4"></div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="space-y-2">
+            <div className="h-32 bg-gray-300 rounded"></div>
             <div className="h-4 bg-gray-300 rounded w-3/4"></div>
             <div className="h-3 bg-gray-300 rounded w-1/2"></div>
           </div>
