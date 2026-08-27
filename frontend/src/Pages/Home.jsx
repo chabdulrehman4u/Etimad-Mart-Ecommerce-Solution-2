@@ -6,6 +6,7 @@ import websiteSchema from '../helpers/getWebsiteSchema';
 import organizationSchema from '../helpers/getOrgSchema';
 import useFacebookPixel from '../hooks/useFacebookPixel';
 import useTikTokPixel from '../hooks/useTikTokPixel';
+import { getCachedHomepageData } from '../functions/homepage';
 
 // Lazy-load components with intersection observer for better performance
 const Categories = lazy(() => import('../components/Categories'));
@@ -132,6 +133,9 @@ const Home = () => {
   const { track: trackTikTok } = useTikTokPixel();
 
   useEffect(() => {
+    // Immediately start fetching all homepage data on mount
+    getCachedHomepageData();
+
     // Mark when critical above-the-fold content is ready
     const timer = setTimeout(() => {
       setCriticalDataLoaded(true);

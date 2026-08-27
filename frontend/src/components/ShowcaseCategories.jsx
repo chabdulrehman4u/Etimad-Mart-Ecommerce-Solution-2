@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { filterByCategory } from "../functions/search";
+import { getShowcaseProducts } from "../functions/homepage";
 import ProductCard from "./cards/ProductCard";
 import ProductCardSkeleton from "./skeletons/ProductCardSkeleton";
 import { Link } from "react-router-dom";
@@ -33,15 +34,19 @@ const ShowcaseCategories = ({
     // Check cache first
     if (categoryCache.has(cacheKey)) {
       const cachedData = categoryCache.get(cacheKey);
-      setProducts(cachedData);
-      return;
+      if (Array.isArray(cachedData) && cachedData.length > 0) {
+        setProducts(cachedData);
+        return;
+      }
     }
 
     // Check if request is already pending
     if (pendingRequests.has(cacheKey)) {
       try {
         const result = await pendingRequests.get(cacheKey);
-        setProducts(result);
+        if (Array.isArray(result) && result.length > 0) {
+          setProducts(result);
+        }
       } catch (err) {
         setProducts([]);
       }
@@ -50,19 +55,30 @@ const ShowcaseCategories = ({
 
     setLoadingProducts(true);
 
-    const requestPromise = filterByCategory({
-      categories: categorySlug,
-      page: 1,
-      limit,
-    })
-      .then((res) => {
-        const products = res?.products || [];
-        if (products.length > 0) {
+    const requestPromise = (async () => {
+      try {
+        const showcase = await getShowcaseProducts(categorySlug);
+        if (Array.isArray(showcase) && showcase.length > 0) {
+          return showcase;
+        }
+        const res = await filterByCategory({
+          categories: categorySlug,
+          page: 1,
+          limit,
+        });
+        return res?.products || [];
+      } catch (e) {
+        console.error(`Error fetching products for ${categorySlug}:`, e);
+        return [];
+      }
+    })()
+      .then((items) => {
+        if (Array.isArray(items) && items.length > 0) {
           const cacheTime = priority ? 10 * 60 * 1000 : 5 * 60 * 1000;
-          categoryCache.set(cacheKey, products);
+          categoryCache.set(cacheKey, items);
           setTimeout(() => categoryCache.delete(cacheKey), cacheTime);
         }
-        return products;
+        return items || [];
       })
       .finally(() => {
         pendingRequests.delete(cacheKey);

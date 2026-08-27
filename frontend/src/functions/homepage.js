@@ -50,59 +50,59 @@ export const getHomepageData = async (params = {}) => {
 
 export const getFeaturedProducts = async (page = 1, limit = 8) => {
   try {
-    const data = await getHomepageData({ featuredPage: page, featuredLimit: limit });
-    const meta = data.data.metadata?.featuredProducts || {};
+    const data = page === 1 ? await getCachedHomepageData() : await getHomepageData({ featuredPage: page, featuredLimit: limit });
+    const meta = data?.data?.metadata?.featuredProducts || {};
     return {
-      products: data.data.featuredProducts,
-      totalProducts: meta.totalProducts ?? data.data.featuredProducts?.length ?? 0,
+      products: data?.data?.featuredProducts || [],
+      totalProducts: meta.totalProducts ?? data?.data?.featuredProducts?.length ?? 0,
       totalPages: meta.totalPages ?? 1,
       currentPage: meta.currentPage ?? page,
       limit: meta.limit ?? limit,
     };
   } catch (error) {
     console.error('Featured products fetch failed:', error);
-    return [];
+    return { products: [], totalProducts: 0, totalPages: 1, currentPage: page, limit };
   }
 };
 
 export const getNewProducts = async (page = 1, limit = 8) => {
   try {
-    const data = await getHomepageData({ newPage: page, newLimit: limit });
-    const meta = data.data.metadata?.newProducts || {};
+    const data = page === 1 ? await getCachedHomepageData() : await getHomepageData({ newPage: page, newLimit: limit });
+    const meta = data?.data?.metadata?.newProducts || {};
     return {
-      products: data.data.newProducts,
-      totalProducts: meta.totalProducts ?? data.data.newProducts?.length ?? 0,
+      products: data?.data?.newProducts || [],
+      totalProducts: meta.totalProducts ?? data?.data?.newProducts?.length ?? 0,
       totalPages: meta.totalPages ?? 1,
       currentPage: meta.currentPage ?? page,
       limit: meta.limit ?? limit,
     };
   } catch (error) {
     console.error('New products fetch failed:', error);
-    return [];
+    return { products: [], totalProducts: 0, totalPages: 1, currentPage: page, limit };
   }
 };
 
 export const getBestSellers = async (page = 1, limit = 5) => {
   try {
-    const data = await getHomepageData({ bestPage: page, bestLimit: limit });
-    const meta = data.data.metadata?.bestSellers || {};
+    const data = page === 1 ? await getCachedHomepageData() : await getHomepageData({ bestPage: page, bestLimit: limit });
+    const meta = data?.data?.metadata?.bestSellers || {};
     return {
-      products: data.data.bestSellers,
-      totalProducts: meta.totalProducts ?? data.data.bestSellers?.length ?? 0,
+      products: data?.data?.bestSellers || [],
+      totalProducts: meta.totalProducts ?? data?.data?.bestSellers?.length ?? 0,
       totalPages: meta.totalPages ?? 1,
       currentPage: meta.currentPage ?? page,
       limit: meta.limit ?? limit,
     };
   } catch (error) {
     console.error('Best sellers fetch failed:', error);
-    return [];
+    return { products: [], totalProducts: 0, totalPages: 1, currentPage: page, limit };
   }
 };
 
 export const getShowcaseProducts = async (categorySlug) => {
   try {
-    const data = await getHomepageData();
-    return data.data.showcaseCategories[categorySlug] || [];
+    const data = await getCachedHomepageData();
+    return data?.data?.showcaseCategories?.[categorySlug] || [];
   } catch (error) {
     console.error(`Showcase products fetch failed for ${categorySlug}:`, error);
     return [];
@@ -131,30 +131,36 @@ export const logPerformanceMetrics = (startTime, endTime, dataSize) => {
 // Cache management
 let homepageDataCache = null;
 let cacheTimestamp = null;
+let pendingHomepageRequest = null;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export const getCachedHomepageData = async () => {
   const now = Date.now();
   // Return cached response if still fresh
   if (homepageDataCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
-    console.log('Using cached homepage data');
     return homepageDataCache;
   }
 
-  // Fetch fresh data
+  // If a request is already in-flight, return the same promise to prevent duplicate API calls
+  if (pendingHomepageRequest) {
+    return pendingHomepageRequest;
+  }
+
   const startTime = performance.now();
-  const data = await getHomepageData();
-  const endTime = performance.now();
+  pendingHomepageRequest = getHomepageData()
+    .then((data) => {
+      const endTime = performance.now();
+      homepageDataCache = data;
+      cacheTimestamp = Date.now();
+      const dataSize = JSON.stringify(data).length;
+      logPerformanceMetrics(startTime, endTime, dataSize);
+      return data;
+    })
+    .finally(() => {
+      pendingHomepageRequest = null;
+    });
 
-  // Cache the data
-  homepageDataCache = data;
-  cacheTimestamp = now;
-
-  // Log performance
-  const dataSize = JSON.stringify(data).length;
-  logPerformanceMetrics(startTime, endTime, dataSize);
-
-  return data;
+  return pendingHomepageRequest;
 };
 
 // Load homepage data with params but still take advantage of simple client-side caching per-URL
