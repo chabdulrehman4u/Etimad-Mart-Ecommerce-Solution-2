@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { BASE_URL } from '../config/baseURL';
+import { getAllProducts } from './product';
 
 // Single function to get all homepage data
 // Accept optional pagination params for featured/new/best sections
@@ -54,16 +55,33 @@ export const getHomepageData = async (params = {}, retries = 2) => {
 export const getFeaturedProducts = async (page = 1, limit = 8) => {
   try {
     const data = page === 1 ? await getCachedHomepageData() : await getHomepageData({ featuredPage: page, featuredLimit: limit });
-    const meta = data?.data?.metadata?.featuredProducts || {};
-    return {
-      products: data?.data?.featuredProducts || [],
-      totalProducts: meta.totalProducts ?? data?.data?.featuredProducts?.length ?? 0,
-      totalPages: meta.totalPages ?? 1,
-      currentPage: meta.currentPage ?? page,
-      limit: meta.limit ?? limit,
-    };
+    const prods = data?.data?.featuredProducts || [];
+    if (prods.length > 0) {
+      const meta = data?.data?.metadata?.featuredProducts || {};
+      return {
+        products: prods,
+        totalProducts: meta.totalProducts ?? prods.length,
+        totalPages: meta.totalPages ?? 1,
+        currentPage: meta.currentPage ?? page,
+        limit: meta.limit ?? limit,
+      };
+    }
   } catch (error) {
-    console.error('Featured products fetch failed:', error);
+    console.warn('Featured products fetch from homepage-data failed:', error?.message);
+  }
+
+  // Robust fallback to getAllProducts (/api/v1/product/getAll)
+  try {
+    const fallback = await getAllProducts(page, limit);
+    return {
+      products: fallback?.products || [],
+      totalProducts: fallback?.totalProducts || 0,
+      totalPages: fallback?.totalPages || 1,
+      currentPage: page,
+      limit,
+    };
+  } catch (err) {
+    console.error('Featured products fallback fetch failed:', err);
     return { products: [], totalProducts: 0, totalPages: 1, currentPage: page, limit };
   }
 };
@@ -71,16 +89,33 @@ export const getFeaturedProducts = async (page = 1, limit = 8) => {
 export const getNewProducts = async (page = 1, limit = 8) => {
   try {
     const data = page === 1 ? await getCachedHomepageData() : await getHomepageData({ newPage: page, newLimit: limit });
-    const meta = data?.data?.metadata?.newProducts || {};
-    return {
-      products: data?.data?.newProducts || [],
-      totalProducts: meta.totalProducts ?? data?.data?.newProducts?.length ?? 0,
-      totalPages: meta.totalPages ?? 1,
-      currentPage: meta.currentPage ?? page,
-      limit: meta.limit ?? limit,
-    };
+    const prods = data?.data?.newProducts || [];
+    if (prods.length > 0) {
+      const meta = data?.data?.metadata?.newProducts || {};
+      return {
+        products: prods,
+        totalProducts: meta.totalProducts ?? prods.length,
+        totalPages: meta.totalPages ?? 1,
+        currentPage: meta.currentPage ?? page,
+        limit: meta.limit ?? limit,
+      };
+    }
   } catch (error) {
-    console.error('New products fetch failed:', error);
+    console.warn('New products fetch from homepage-data failed:', error?.message);
+  }
+
+  // Robust fallback to getAllProducts (/api/v1/product/getAll)
+  try {
+    const fallback = await getAllProducts(page, limit);
+    return {
+      products: fallback?.products || [],
+      totalProducts: fallback?.totalProducts || 0,
+      totalPages: fallback?.totalPages || 1,
+      currentPage: page,
+      limit,
+    };
+  } catch (err) {
+    console.error('New products fallback fetch failed:', err);
     return { products: [], totalProducts: 0, totalPages: 1, currentPage: page, limit };
   }
 };
@@ -88,16 +123,33 @@ export const getNewProducts = async (page = 1, limit = 8) => {
 export const getBestSellers = async (page = 1, limit = 5) => {
   try {
     const data = page === 1 ? await getCachedHomepageData() : await getHomepageData({ bestPage: page, bestLimit: limit });
-    const meta = data?.data?.metadata?.bestSellers || {};
-    return {
-      products: data?.data?.bestSellers || [],
-      totalProducts: meta.totalProducts ?? data?.data?.bestSellers?.length ?? 0,
-      totalPages: meta.totalPages ?? 1,
-      currentPage: meta.currentPage ?? page,
-      limit: meta.limit ?? limit,
-    };
+    const prods = data?.data?.bestSellers || [];
+    if (prods.length > 0) {
+      const meta = data?.data?.metadata?.bestSellers || {};
+      return {
+        products: prods,
+        totalProducts: meta.totalProducts ?? prods.length,
+        totalPages: meta.totalPages ?? 1,
+        currentPage: meta.currentPage ?? page,
+        limit: meta.limit ?? limit,
+      };
+    }
   } catch (error) {
-    console.error('Best sellers fetch failed:', error);
+    console.warn('Best sellers fetch from homepage-data failed:', error?.message);
+  }
+
+  // Robust fallback to getAllProducts (/api/v1/product/getAll)
+  try {
+    const fallback = await getAllProducts(page, limit);
+    return {
+      products: fallback?.products || [],
+      totalProducts: fallback?.totalProducts || 0,
+      totalPages: fallback?.totalPages || 1,
+      currentPage: page,
+      limit,
+    };
+  } catch (err) {
+    console.error('Best sellers fallback fetch failed:', err);
     return { products: [], totalProducts: 0, totalPages: 1, currentPage: page, limit };
   }
 };

@@ -23,6 +23,9 @@ const Shop = () => {
     const [categoryFilter, setCategoryFilter] = useState([]);
     const [minPrice, setMinPrice] = useState(null);
     const [maxPrice, setMaxPrice] = useState(null);
+    const [priceBounds, setPriceBounds] = useState({ min: 0, max: 10000 });
+    const [ratingFilter, setRatingFilter] = useState(null);
+    const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
@@ -68,6 +71,10 @@ const Shop = () => {
                 }
             } catch (error) {
                 console.log("Error in fetching min and max price", error);
+            }
+        };
+        fetchMinMaxPrice();
+    }, []);
 
     useEffect(() => {
         fetchAllCategories();
@@ -87,6 +94,7 @@ const Shop = () => {
                 !!priceFilter ||
                 isPriceChanged;
 
+            let response;
 
             if (isAnyFilterActive) {
                 const params = { page, limit: 16 };
@@ -94,6 +102,7 @@ const Shop = () => {
                 if (brandFilter) params.brand = brandFilter;
                 if (ratingFilter) params.rating = ratingFilter;
                 if (minPrice != null) params.minPrice = minPrice;
+                if (maxPrice != null) params.maxPrice = maxPrice;
                 if (priceFilter === "low") params.sort = "price_asc";
                 if (priceFilter === "high") params.sort = "price_desc";
 
@@ -119,6 +128,14 @@ const Shop = () => {
     };
 
     const getVisiblePages = () => {
+        const visiblePages = [];
+        const maxVisiblePages = 5;
+
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = startPage + maxVisiblePages - 1;
+
+        if (endPage > totalPages) {
+            endPage = totalPages;
             startPage = Math.max(1, endPage - maxVisiblePages + 1);
         }
 
