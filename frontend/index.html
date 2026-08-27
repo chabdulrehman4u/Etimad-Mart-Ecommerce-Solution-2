@@ -2,243 +2,15 @@
 <html lang="en">
 
 <head>
-  <!-- TikTok Pixel Code - Load Early -->
-  <script>
-    !function (w, d, t) {
-      w.TiktokAnalyticsObject = t;
-      var ttq = w[t] = w[t] || [];
-      ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie", "holdConsent", "revokeConsent", "grantConsent"];
-      ttq.setAndDefer = function (t, e) { t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } };
-      for (var i = 0; i < ttq.methods.length; i++)ttq.setAndDefer(ttq, ttq.methods[i]);
-      ttq.instance = function (t) {
-        for (var e = ttq._i[t] || [], n = 0; n < ttq.methods.length; n++)ttq.setAndDefer(e, ttq.methods[n]);
-        return e
-      };
-      ttq.load = function (e, n) {
-        var r = "https://analytics.tiktok.com/i18n/pixel/events.js", o = n && n.partner;
-        ttq._i = ttq._i || {}, ttq._i[e] = [], ttq._i[e]._u = r, ttq._t = ttq._t || {}, ttq._t[e] = +new Date, ttq._o = ttq._o || {}, ttq._o[e] = n || {};
-        n = document.createElement("script");
-        n.type = "text/javascript", n.async = !0, n.src = r + "?sdkid=" + e + "&lib=" + t;
-        e = document.getElementsByTagName("script")[0];
-        e.parentNode.insertBefore(n, e)
-      };
-
-      ttq.load('D48QT53C77U0CLRNOECG');
-      ttq.page();
-    }(window, document, 'ttq');
-  </script>
-  <!-- End TikTok Pixel Code -->
-
-  <!-- Optimized Google Tag Manager (load after interaction) -->
-  <script>
-    (function (w, d, s, l, i) {
-      // Minimal dataLayer stub
-      w[l] = w[l] || [];
-      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-
-      function loadGTM() {
-        if (w.__gtmLoaded) return;
-        w.__gtmLoaded = true;
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      }
-
-      // Load GTM after user interaction or on commerce pages
-      var path = (w.location && w.location.pathname) || '/';
-      var isCommercePage = /\b(product|cart|checkout)\b/.test(path);
-
-      if (isCommercePage) {
-        // Load immediately on commerce pages
-        (w.requestIdleCallback || function (cb) { setTimeout(cb, 100); })(loadGTM);
-      } else {
-        // Load after first interaction on other pages
-        var events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-        var loaded = false;
-        var loadOnce = function () {
-          if (loaded) return;
-          loaded = true;
-          events.forEach(function (e) {
-            d.removeEventListener(e, loadOnce, { passive: true });
-          });
-          (w.requestIdleCallback || function (cb) { setTimeout(cb, 100); })(loadGTM);
-        };
-        events.forEach(function (e) {
-          d.addEventListener(e, loadOnce, { passive: true, once: true });
-        });
-        // Fallback: load after 3 seconds
-        setTimeout(loadOnce, 3000);
-      }
-    })(window, document, "script", "dataLayer", "GTM-WB2JJH4Z");
-  </script>
-  <!-- End Optimized Google Tag Manager -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <!-- Mobile performance hints -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <!-- Performance: Preconnect to critical origins with mobile priority -->
-  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
-  <link rel="preconnect" href="https://etimadmart.up.railway.app" crossorigin>
-  <link rel="dns-prefetch" href="//res.cloudinary.com">
-  <link rel="dns-prefetch" href="//etimadmart.up.railway.app">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="color-scheme" content="light" />
+  <link rel="icon" type="image/png" href="/top-logo.png" />
 
-  <!-- Only preconnect fonts on desktop to avoid mobile blocking -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" media="(min-width: 769px)">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin media="(min-width: 769px)">
-
-  <!-- Critical LCP Image Preload - Mobile First -->
-  <link rel="preload" as="image" href="/customBanner1.webp" media="(max-width: 640px)" fetchpriority="high" />
-  <link rel="preload" as="image" href="/customBanner1.webp" media="(min-width: 641px)" fetchpriority="high" />
-
-  <!-- Preload second banner for faster carousel -->
-  <link rel="preload" as="image" href="/customBanner2.webp" fetchpriority="low" />
-
-  <!-- Critical Resource Hints -->
-  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
-  <link rel="preconnect" href="https://etimadmart.up.railway.app" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <!-- DNS Prefetch for non-critical resources -->
-  <link rel="dns-prefetch" href="//connect.facebook.net">
-  <link rel="dns-prefetch" href="//www.facebook.com">
-  <link rel="dns-prefetch" href="//www.googletagmanager.com">
-  <!-- Preload splash logo early so it appears instantly -->
-  <link rel="preload" as="image" href="/f-logo.png" />
-
-  <!-- Critical CSS for LCP optimization -->
-  <style>
-    /* Critical above-the-fold styles to prevent layout shift */
-    .banner-container {
-      width: 100%;
-      max-width: 100vw;
-      aspect-ratio: 1920/550;
-      background-color: #f3f4f6;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .banner-image {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-    }
-
-    /* Prevent layout shift for navigation dots */
-    .banner-dots {
-      display: flex;
-      justify-content: center;
-      margin: 8px 0;
-      min-height: 32px;
-    }
-
-    /* Responsive banner transitions - prevent layout shifts */
-    .banner-container {
-      width: 100% !important;
-      max-width: 100% !important;
-      position: relative !important;
-      height: auto !important;
-      overflow: visible !important;
-      transition: all 0.3s ease !important;
-    }
-
-    .banner-container img,
-    .banner-container picture img {
-      width: 100% !important;
-      height: auto !important;
-      display: block !important;
-      transition: all 0.3s ease !important;
-      max-height: none !important;
-      min-height: auto !important;
-    }
-
-    /* Mobile-specific banner styles */
-    @media (max-width: 767px) {
-      .banner-container {
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-
-      .banner-container img,
-      .banner-container picture img {
-        object-fit: contain !important;
-        object-position: center !important;
-      }
-    }
-
-    /* Desktop-specific banner styles */
-    @media (min-width: 768px) {
-
-      .banner-container img,
-      .banner-container picture img {
-        object-fit: cover !important;
-        object-position: center !important;
-        max-height: 400px !important;
-      }
-    }
-
-    /* Prevent any layout shifts during responsive transitions */
-    .banner-container,
-    .banner-container *,
-    .banner-container a,
-    .banner-container div,
-    .banner-container picture {
-      height: auto !important;
-      max-height: none !important;
-    }
-
-    /* Override Tailwind classes that might cause issues */
-    .banner-container .h-full,
-    .banner-container .absolute,
-    .banner-container .inset-0 {
-      position: relative !important;
-      height: auto !important;
-      top: auto !important;
-      left: auto !important;
-      right: auto !important;
-      bottom: auto !important;
-    }
-
-    /* Keen slider mobile optimizations */
-    .keen-slider {
-      height: auto !important;
-    }
-
-    .keen-slider__slide {
-      height: auto !important;
-      min-height: auto !important;
-    }
-
-    @media (max-width: 767px) {
-
-      .keen-slider,
-      .keen-slider__slide {
-        height: auto !important;
-        min-height: auto !important;
-      }
-    }
-  </style>
-  <!-- Content Security Policy Meta Tag (Backup for cPanel) -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.tiktok.com;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    font-src 'self' data: https://fonts.gstatic.com;
-    img-src 'self' data: https: blob: https://res.cloudinary.com https://www.facebook.com https://analytics.tiktok.com;
-    connect-src 'self' https://etimad-mart-api.onrender.com https://*.onrender.com https://etimadmart.com https://etimadmart.up.railway.app https://etimadmart.vercel.app https://*.vercel.app https://etimadmart.com/api/v1 https://www.google-analytics.com https://res.cloudinary.com https://www.facebook.com https://connect.facebook.net https://analytics.tiktok.com https://*.run.app;
-    frame-src 'self' https://www.facebook.com;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self' https://www.facebook.com
-  " />
+  <!-- Primary SEO Meta Tags -->
+  <title>Etimad Mart - Online Shopping in Pakistan</title>
+  <meta name="description" content="Etimad Mart – trusted online store in Pakistan. Shop top-quality grooming tools, trimmers & shavers, fashion wear, kitchen & household items with great deals." />
   <meta name="google-site-verification" content="XFfrylpN_jyzGe1E23oSqq85BIkGc_GUToUX4Sv1jyg" />
 
   <!-- Geographic and Currency Meta Tags -->
@@ -248,340 +20,11 @@
   <meta property="og:locale" content="en_PK" />
   <meta property="og:site_name" content="Etimad Mart Pakistan" />
 
-  <link rel="icon" type="image/png" href="/top-logo.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Load Poppins asynchronously to avoid render-blocking; rely on system-ui fallback initially -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
-    onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  </noscript>
-
-  <!-- Secondary fonts loaded asynchronously to avoid render-blocking -->
-  <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap"
-    onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap"
-      rel="stylesheet" />
-  </noscript>
-
-  <!-- CRITICAL CSS FOR PERFORMANCE - EXPANDED -->
-  <style>
-    /* Critical CSS for Above-the-Fold Content - Inlined for best performance */
-
-    /* Base styles */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-      line-height: 1.6;
-      color: #333;
-      margin: 0;
-      padding: 0;
-      background-color: #fff
-    }
-
-    /* Layout containers */
-    .main-container {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column
-    }
-
-    .content-wrapper {
-      flex: 1
-    }
-
-    /* Navbar critical styles */
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background-color: white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 0.75rem 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between
-    }
-
-    /* Banner skeleton styles */
-    .banner-skeleton {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite
-    }
-
-    /* Product grid critical styles */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1rem;
-      padding: 1rem
-    }
-
-    .product-card {
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s, box-shadow 0.2s
-    }
-
-    .product-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15)
-    }
-
-    /* Button critical styles */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 500;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s
-    }
-
-    .btn-primary {
-      background-color: #f59e0b;
-      color: white
-    }
-
-    .btn-primary:hover {
-      background-color: #d97706
-    }
-
-    /* Loading animations */
-    @keyframes loading {
-      0% {
-        background-position: 200% 0
-      }
-
-      100% {
-        background-position: -200% 0
-      }
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1
-      }
-
-      50% {
-        opacity: 0.5
-      }
-    }
-
-    /* Skeleton loaders */
-    .skeleton {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite
-    }
-
-    /* Base banner styles (applies to all screen sizes) */
-    .banner-container {
-      width: 100%;
-      position: relative;
-      background-color: transparent;
-      overflow: visible;
-      transition: all 0.3s ease;
-    }
-
-    .banner-container img {
-      width: 100%;
-      display: block;
-      transition: all 0.3s ease;
-    }
-
-    /* Mobile-first responsive breakpoints */
-    @media (max-width: 767px) {
-
-      /* Mobile banner layout */
-      .banner-container {
-        padding-top: 0;
-        min-height: auto;
-        height: auto;
-      }
-
-      .banner-container img {
-        position: relative;
-        height: auto;
-        object-fit: contain;
-        object-position: center;
-      }
-    }
-
-    /* Desktop banner layout */
-    @media (min-width: 768px) {
-      .banner-container {
-        padding-top: 0;
-        min-height: auto;
-        height: auto;
-      }
-
-      .banner-container img {
-        position: relative;
-        height: auto;
-        object-fit: cover;
-        object-position: center;
-        max-height: 400px;
-      }
-    }
-
-    /* Mobile-specific optimizations */
-    @media (max-width: 640px) {
-      .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-        padding: 0.5rem
-      }
-
-      /* Mobile navigation optimization */
-      .navbar {
-        padding: 0.25rem;
-        font-size: 0.875rem;
-        min-height: auto
-      }
-
-      body {
-        font-size: 14px;
-        line-height: 1.4;
-        font-display: swap
-      }
-
-      .container {
-        padding: 0.25rem
-      }
-
-      /* Reduce mobile margins for faster paint */
-      .my-8 {
-        margin-top: 0.5rem !important;
-        margin-bottom: 0.5rem !important
-      }
-
-      .py-8 {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important
-      }
-
-      /* Hide non-critical elements on mobile initially */
-      .mobile-hidden {
-        display: none !important
-      }
-    }
-
-    /* Performance optimizations */
-    .prevent-cls {
-      contain: layout style paint
-    }
-
-    .focus-visible {
-      outline: 2px solid #4F46E5;
-      outline-offset: 2px
-    }
-
-    /* Reduced motion */
-    @media (prefers-reduced-motion:reduce) {
-
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important
-      }
-    }
-
-    /* Hide non-critical content initially */
-    .below-fold {
-      visibility: hidden
-    }
-
-    .below-fold.loaded {
-      visibility: visible
-    }
-  </style>
-
-  <!-- CSS Loading Strategy -->
-  <script>
-    // Defer non-critical CSS loading
-    (function () {
-      function loadCSS(href, media) {
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = href;
-        link.media = media || 'all';
-        document.head.appendChild(link);
-      }
-
-      // Load main CSS after critical rendering
-      if (window.requestIdleCallback) {
-        requestIdleCallback(function () {
-          // Main CSS will be injected by Vite, but we ensure it's non-blocking
-          document.documentElement.classList.add('css-loaded');
-        });
-      } else {
-        setTimeout(function () {
-          document.documentElement.classList.add('css-loaded');
-        }, 100);
-      }
-
-      // Show below-fold content after initial render
-      document.addEventListener('DOMContentLoaded', function () {
-        setTimeout(function () {
-          var belowFoldElements = document.querySelectorAll('.below-fold');
-          belowFoldElements.forEach(function (el) {
-            el.classList.add('loaded');
-          });
-        }, 50);
-      });
-    })();
-  </script>
-
-  <!-- CRITICAL RESOURCE PRELOADS -->
-  <link rel="preload" href="/customBanner2.webp" as="image" fetchpriority="high">
-  <link rel="preload" href="https://res.cloudinary.com/dqcfamwuf/image/upload/v1751867708/banners/yuky_v1.webp"
-    as="image" fetchpriority="high">
-
-  <!-- ADDITIONAL PERFORMANCE OPTIMIZATIONS -->
-  <link rel="dns-prefetch" href="//etimadmart.up.railway.app">
-  <link rel="dns-prefetch" href="//res.cloudinary.com">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="color-scheme" content="light">
-
-  <!-- Primary SEO Meta Tags -->
-  <title>Etimad Mart - Online Shopping in Pakistan</title>
-  <meta
-    name="description"
-    content="Etimad Mart – trusted online store in Pakistan. Shop top-quality grooming tools, trimmers & shavers, fashion wear, kitchen & household items with great deals." />
-
-  <!-- Open Graph / Social Sharing Meta (for WhatsApp, Facebook, etc.) -->
+  <!-- Open Graph / Social Sharing Meta -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Etimad Mart - Online Shopping in Pakistan" />
-  <meta
-    property="og:description"
-    content="Etimad Mart – trusted online store in Pakistan. Shop top-quality grooming tools, trimmers & shavers, fashion wear, kitchen & household items with great deals." />
+  <meta property="og:description" content="Etimad Mart – trusted online store in Pakistan. Shop top-quality grooming tools, trimmers & shavers, fashion wear, kitchen & household items with great deals." />
   <meta property="og:url" content="https://etimadmart.com/" />
-  <!-- Use logo image for social previews -->
   <meta property="og:image" content="https://etimadmart.com/top-logo.png" />
   <meta property="og:image:width" content="600" />
   <meta property="og:image:height" content="600" />
@@ -589,308 +32,171 @@
   <!-- Twitter Card Meta -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Etimad Mart - Online Shopping in Pakistan" />
-  <meta
-    name="twitter:description"
-    content="Etimad Mart – trusted online store in Pakistan. Shop top-quality grooming tools, trimmers & shavers, fashion wear, kitchen & household items with great deals." />
+  <meta name="twitter:description" content="Etimad Mart – trusted online store in Pakistan. Shop top-quality grooming tools, trimmers & shavers, fashion wear, kitchen & household items with great deals." />
   <meta name="twitter:image" content="https://etimadmart.com/top-logo.png" />
 
-  <!-- Minimal Google Analytics (defer until interaction) -->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
+  <!-- Content Security Policy Meta Tag -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.tiktok.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' data: https://fonts.gstatic.com;
+    img-src 'self' data: https: blob: https://res.cloudinary.com https://www.facebook.com https://analytics.tiktok.com;
+    connect-src 'self' https://etimad-mart-api.onrender.com https://*.onrender.com https://etimadmart.com https://etimadmart.vercel.app https://*.vercel.app https://www.google-analytics.com https://res.cloudinary.com https://www.facebook.com https://connect.facebook.net https://analytics.tiktok.com;
+    frame-src 'self' https://www.facebook.com;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self' https://www.facebook.com
+  " />
 
-    function loadGA() {
-      if (window.__gaLoaded) return;
-      window.__gaLoaded = true;
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-E9DQ6Y0HFP';
-      document.head.appendChild(s);
-      s.onload = function () {
-        gtag('js', new Date());
-        gtag('config', 'G-E9DQ6Y0HFP', {
-          send_page_view: false // Prevent automatic pageview
-        });
-        gtag('event', 'page_view'); // Manual pageview
-      };
+  <!-- Performance: Critical Preconnects -->
+  <link rel="preconnect" href="https://etimad-mart-api.onrender.com" crossorigin />
+  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="//etimad-mart-api.onrender.com" />
+  <link rel="dns-prefetch" href="//res.cloudinary.com" />
+  <link rel="dns-prefetch" href="//connect.facebook.net" />
+  <link rel="dns-prefetch" href="//analytics.tiktok.com" />
+
+  <!-- Critical LCP Hero Banner Preload -->
+  <link rel="preload" as="image" href="https://res.cloudinary.com/dmcgfwmuf/image/upload/v1761894276/banners/etanztngb40zfk57dap3.webp?f_avif&q_auto:good&dpr=1&w=1366&h=680&c=fit&fl=force_strip" fetchpriority="high" />
+
+  <!-- Optimized Google Fonts with display=swap -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@400;500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  </noscript>
+
+  <!-- Critical CSS to prevent Cumulative Layout Shift (CLS) and speed up FCP -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      color: #1f2937;
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      -webkit-font-smoothing: antialiased;
     }
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .banner-container {
+      width: 100%;
+      aspect-ratio: 1920/550;
+      background-color: #f3f4f6;
+      position: relative;
+      overflow: hidden;
+    }
+    .banner-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+    @media (max-width: 767px) {
+      .banner-container { aspect-ratio: 16/9; }
+      body { font-size: 14px; }
+    }
+    .keen-slider { height: auto !important; }
+    .keen-slider__slide { height: auto !important; min-height: auto !important; }
+    .prevent-cls { contain: layout style paint; }
+  </style>
 
-    // Load GA after user interaction
-    var events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-    var loaded = false;
-    var loadOnce = function () {
-      if (loaded) return;
-      loaded = true;
-      events.forEach(function (e) {
-        document.removeEventListener(e, loadOnce);
-      });
-      (window.requestIdleCallback || function (cb) { setTimeout(cb, 200); })(loadGA);
-    };
-    events.forEach(function (e) {
-      document.addEventListener(e, loadOnce, { passive: true, once: true });
-    });
-    // Fallback: load after 4 seconds
-    setTimeout(loadOnce, 4000);
-  </script>
-  <!-- Meta Pixel (Facebook Pixel) - Fixed for all pages -->
+  <!-- Non-blocking Analytics Loader (TikTok, GTM, Meta Pixel) -->
   <script>
     (function (w, d) {
-      // Initialize Facebook Pixel on all pages
-      if (!w.fbq) {
-        var n = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
-        n.queue = []; n.version = '2.0'; n.loaded = false; w.fbq = n; w._fbq = n;
+      w.dataLayer = w.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      w.gtag = gtag;
+
+      var loaded = false;
+      function loadAllAnalytics() {
+        if (loaded) return;
+        loaded = true;
+
+        // 1. Google Tag Manager
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+          var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != "dataLayer" ? "&l=" + l : "";
+          j.async = true; j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(w, d, "script", "dataLayer", "GTM-WB2JJH4Z");
+
+        // 2. TikTok Pixel
+        (function (w, d, t) {
+          w.TiktokAnalyticsObject = t;
+          var ttq = w[t] = w[t] || [];
+          ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie", "holdConsent", "revokeConsent", "grantConsent"];
+          ttq.setAndDefer = function (t, e) { t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } };
+          for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
+          ttq.instance = function (t) {
+            for (var e = ttq._i[t] || [], n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]);
+            return e;
+          };
+          ttq.load = function (e, n) {
+            var r = "https://analytics.tiktok.com/i18n/pixel/events.js";
+            ttq._i = ttq._i || {}; ttq._i[e] = []; ttq._i[e]._u = r; ttq._t = ttq._t || {}; ttq._t[e] = +new Date;
+            var script = d.createElement("script");
+            script.type = "text/javascript"; script.async = true; script.src = r + "?sdkid=" + e + "&lib=" + t;
+            var first = d.getElementsByTagName("script")[0];
+            first.parentNode.insertBefore(script, first);
+          };
+          ttq.load('D48QT53C77U0CLRNOECG');
+          ttq.page();
+        })(w, d, 'ttq');
+
+        // 3. Meta (Facebook) Pixel
+        (function (f, b, e, v, n, t, s) {
+          if (f.fbq) return;
+          n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+          if (!f._fbq) f._fbq = n;
+          n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+          t = b.createElement(e); t.async = true; t.src = v;
+          s = b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t, s);
+          fbq('init', '4178050992439851');
+          fbq('track', 'PageView');
+        })(w, d, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
       }
 
-      // Load the pixel script with fallback
-      function loadFbPixel() {
-        if (w.__fbPixelLoaded) return;
-        w.__fbPixelLoaded = true;
-
-        var s = d.createElement('script');
-        s.async = true;
-        s.src = 'https://connect.facebook.net/en_US/fbevents.js';
-        s.crossOrigin = 'anonymous';
-        s.referrerPolicy = 'strict-origin-when-cross-origin';
-
-        // Add error handling for script loading
-        s.onerror = function () {
-          console.error('❌ Failed to load Meta Pixel script');
-          // console.log('🔍 Possible causes:');
-          // console.log('- Ad blocker blocking Facebook scripts');
-          // console.log('- Network connectivity issues');
-          // console.log('- CSP (Content Security Policy) blocking');
-          // console.log('- DNS resolution issues');
-        };
-
-        var first = d.getElementsByTagName('script')[0];
-        first.parentNode.insertBefore(s, first);
-
-        s.onload = function () {
-          try {
-            console.log('📡 Meta Pixel script loaded successfully');
-
-            // Robust pixel initialization with conflict handling
-            try {
-              // Initialize the correct pixel ID
-              fbq('init', '4178050992439851');
-              console.log('🔧 Meta Pixel initialized for domain:', w.location.hostname);
-
-              // Verify initialization worked
-              setTimeout(function () {
-                if (w.fbq && w.fbq._fbq && w.fbq._fbq.pixelsByID && w.fbq._fbq.pixelsByID['4178050992439851']) {
-                  console.log('✅ Pixel 4178050992439851 successfully initialized');
-                } else {
-                  console.error('❌ Pixel 4178050992439851 failed to initialize');
-                  // Try alternative initialization
-                  console.log('🔄 Attempting alternative initialization...');
-                  fbq('init', '4178050992439851', {}, { agent: 'plethora' });
-                }
-              }, 500);
-
-            } catch (initError) {
-              console.error('❌ Pixel initialization error:', initError);
-              // Fallback initialization
-              console.log('🔄 Attempting fallback initialization...');
-              w.fbq('init', '4178050992439851');
-            }
-
-            // Debug: Check if there are multiple pixels
-            setTimeout(function () {
-              console.log('🔍 Checking for multiple pixels...');
-
-              // Check fbq internal structure
-              if (w.fbq && w.fbq._fbq) {
-                console.log('📊 fbq._fbq exists:', !!w.fbq._fbq);
-
-                if (w.fbq._fbq.pixelsByID) {
-                  var pixelIds = Object.keys(w.fbq._fbq.pixelsByID);
-                  console.log('🔍 Active Pixel IDs:', pixelIds);
-
-                  if (pixelIds.length > 1) {
-                    console.warn('⚠️ Multiple pixels detected:', pixelIds);
-                    console.log('✅ Expected: 4178050992439851');
-                    console.log('❌ Unexpected pixels:', pixelIds.filter(id => id !== '4178050992439851'));
-
-                    // Try to disable the duplicate pixel
-                    pixelIds.forEach(function (id) {
-                      if (id !== '4178050992439851') {
-                        console.log('🚫 Attempting to disable duplicate pixel:', id);
-                        try {
-                          delete w.fbq._fbq.pixelsByID[id];
-                          console.log('✅ Disabled pixel:', id);
-                        } catch (e) {
-                          console.warn('❌ Could not disable pixel:', id, e);
-                        }
-                      }
-                    });
-                  } else {
-                    console.log('✅ Only one pixel active:', pixelIds[0]);
-                  }
-                } else {
-                  console.log('📊 pixelsByID not found');
-                }
-              } else {
-                console.log('📊 fbq._fbq not available');
-              }
-
-              // Check for any scripts with the duplicate pixel ID
-              var scripts = d.querySelectorAll('script');
-              var duplicateFound = false;
-              for (var i = 0; i < scripts.length; i++) {
-                if (scripts[i].innerHTML && scripts[i].innerHTML.includes('4178050992439851')) {
-                  console.warn('🚨 Found duplicate pixel in script:', scripts[i]);
-                  duplicateFound = true;
-                }
-              }
-              if (!duplicateFound) {
-                console.log('🔍 No duplicate pixel found in scripts - may be from external source');
-              }
-            }, 2000);
-
-            // Track simple PageView without extra parameters
-            fbq('track', 'PageView');
-
-            console.log('📊 Initial PageView tracked');
-          } catch (e) {
-            console.error('❌ Meta Pixel initialization error:', e);
-          }
-        };
+      // Defer analytics until after initial paint / user interaction
+      var interactionEvents = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+      function onInteract() {
+        interactionEvents.forEach(function (e) { d.removeEventListener(e, onInteract, { passive: true }); });
+        loadAllAnalytics();
       }
+      interactionEvents.forEach(function (e) { d.addEventListener(e, onInteract, { passive: true, once: true }); });
 
-      // Check for existing pixels before loading
-      console.log('🔍 Pre-load pixel check...');
-      if (w.fbq && w.fbq._fbq && w.fbq._fbq.pixelsByID) {
-        var existingPixels = Object.keys(w.fbq._fbq.pixelsByID);
-        if (existingPixels.length > 0) {
-          console.warn('⚠️ Pixels already exist before our script:', existingPixels);
-          console.log('🔍 This suggests another script/extension is loading Meta Pixel');
-        }
+      if (w.requestIdleCallback) {
+        w.requestIdleCallback(loadAllAnalytics, { timeout: 3500 });
+      } else {
+        setTimeout(loadAllAnalytics, 3000);
       }
-
-      // Load immediately for better event tracking
-      loadFbPixel();
-
-      // Enhanced production debugging
-      setTimeout(function () {
-        var isProduction = w.location.hostname !== 'localhost' &&
-          !w.location.hostname.includes('127.0.0.1') &&
-          !w.location.hostname.includes('localhost');
-
-        console.log('🔍 Meta Pixel Debug Info:');
-        console.log('- Domain:', w.location.hostname);
-        console.log('- Protocol:', w.location.protocol);
-        console.log('- Is Production:', isProduction);
-        console.log('- fbq exists:', typeof w.fbq);
-        console.log('- fbq function:', typeof w.fbq === 'function');
-        console.log('- User Agent:', navigator.userAgent.substring(0, 50) + '...');
-
-        // Check if script loaded
-        var fbScript = d.querySelector('script[src*="fbevents.js"]');
-        console.log('- FB Script loaded:', !!fbScript);
-
-        // Check for blockers
-        if (!fbScript || typeof w.fbq !== 'function') {
-          console.error('⚠️ Meta Pixel blocked or failed to load');
-          console.log('🔍 Possible causes:');
-          console.log('1. Ad blocker or privacy extension');
-          console.log('2. Browser privacy settings (Safari ITP, Firefox ETP)');
-          console.log('3. CSP headers blocking scripts');
-          console.log('4. Network/firewall blocking Facebook domains');
-          console.log('5. CORS or SSL certificate issues');
-        }
-
-        if (w.fbq && typeof w.fbq === 'function') {
-          console.log('✅ Meta Pixel loaded successfully on', w.location.hostname);
-          console.log('🚀 Meta Pixel ready -', isProduction ? 'Production Mode' : 'Development Mode');
-        } else {
-          console.warn('❌ Meta Pixel failed to load');
-          console.log('🔍 Debugging info:');
-          console.log('- Script loaded:', !!d.querySelector('script[src*="fbevents.js"]'));
-          console.log('- Network blocked:', 'Check browser console for network errors');
-          console.log('- Ad blocker:', 'Check if ad blocker is blocking Facebook scripts');
-        }
-      }, 3000);
     })(window, document);
-  </script>
-  <!-- End Meta Pixel -->
-
-  <!-- PERFORMANCE MONITORING & OPTIMIZATION SCRIPT -->
-  <script>
-    // Performance monitoring and optimization
-    (function () {
-      // Mark critical resources
-      if ('performance' in window && 'mark' in performance) {
-        performance.mark('head-start');
-      }
-
-      // Preload critical resources immediately
-      var criticalResources = [
-        { href: '/customBanner2.webp', as: 'image', fetchpriority: 'high' },
-        { href: 'https://res.cloudinary.com/dqcfamwuf/image/upload/v1751867708/banners/yuky_v1.webp', as: 'image', fetchpriority: 'high' }
-      ];
-
-      criticalResources.forEach(function (resource) {
-        var link = document.createElement('link');
-        link.rel = 'preload';
-        link.as = resource.as;
-        link.href = resource.href;
-        if (resource.fetchpriority) link.fetchPriority = resource.fetchpriority;
-        document.head.appendChild(link);
-      });
-
-      // Resource hints for better performance
-      var resourceHints = [
-        { rel: 'dns-prefetch', href: '//res.cloudinary.com' },
-        { rel: 'preconnect', href: 'https://etimadmart.up.railway.app' }
-      ];
-
-      resourceHints.forEach(function (hint) {
-        if (!document.querySelector('link[href="' + hint.href + '"]')) {
-          var link = document.createElement('link');
-          link.rel = hint.rel;
-          link.href = hint.href;
-          if (hint.rel === 'preconnect') link.crossOrigin = 'anonymous';
-          document.head.appendChild(link);
-        }
-      });
-
-      // Critical CSS loaded indicator
-      document.documentElement.classList.add('critical-css-loaded');
-
-      // Mark when head processing is complete
-      if ('performance' in window && 'mark' in performance) {
-        performance.mark('head-end');
-      }
-    })();
-
-    // Mobile-optimized resource loading
-    window.addEventListener('load', function () {
-      var isMobile = window.innerWidth <= 768;
-      var delay = isMobile ? 2000 : 1000; // Longer delay on mobile
-
-      setTimeout(function () {
-        var resources = isMobile
-          ? ['/api/products'] // Only essential API on mobile
-          : ['/api/products', '/api/categories', '/api/banners'];
-
-        resources.forEach(function (href) {
-          var link = document.createElement('link');
-          link.rel = 'prefetch';
-          link.href = href;
-          document.head.appendChild(link);
-        });
-      }, delay);
-    });
   </script>
 </head>
 
 <body>
   <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WB2JJH4Z" height="0" width="0"
-      style="display: none; visibility: hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <noscript><img height="1" width="1" style="display: none"
-      src="https://www.facebook.com/tr?id=4178050992439851&ev=PageView&noscript=1" /></noscript>
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WB2JJH4Z" height="0" width="0" style="display: none; visibility: hidden"></iframe>
+  </noscript>
+  <noscript>
+    <img height="1" width="1" style="display: none" src="https://www.facebook.com/tr?id=4178050992439851&ev=PageView&noscript=1" alt="" />
+  </noscript>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
